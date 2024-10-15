@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Tymon\JWTAuth\Facades\JWTAuth;
 
 class ApiController extends Controller
 {
@@ -34,6 +35,31 @@ class ApiController extends Controller
     //Login API (POST, formData)
     public function login(Request $request){
 
+        //Data validation
+        $request->validate([
+            "email" => "required|email",
+            "password" => "required"
+        ]);
+
+        //JWTAuth and Attempt
+        $token = JWTAuth::attempt([
+            "email" => $request->email, 
+            "password" => $request->password
+        ]);
+
+        if (!empty($token)) {
+            //Response
+            return response()->json([
+                "status" => true,
+                "message" => "User Logged in Successfully",
+                "token" => $token
+            ]);
+        }
+        //Response
+        return response()->json([
+            "status" => false,
+            "message" => "Invalid Login Details"
+        ]);
     }
 
     //Refreh Token API (GET)
