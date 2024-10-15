@@ -75,7 +75,13 @@ class ApiController extends Controller
 
     //Refreh Token API (GET)
     public function refreshToken(){
+        $newToken = auth()->refresh();
 
+        return response()->json([
+            "status" => true,
+            "message" => "New Acces Token Authenticated",
+            "token" => $newToken
+        ]);
     }
     
     //Logout API (GET)
